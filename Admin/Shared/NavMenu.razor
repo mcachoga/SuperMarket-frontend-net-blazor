@@ -1,0 +1,31 @@
+﻿<UserCard Style="background-color: var(--mud-palette-drawer-background);color: var(--mud-palette-drawer-text);"/>
+
+<MudNavMenu>
+    <MudNavLink Href="/" Match="NavLinkMatch.All" Class="my-1" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+    <MudNavLink Href="/account" Icon="@Icons.Material.Outlined.LockPerson">Account</MudNavLink>
+    @if (_canViewMarkets)
+    {
+        <MudNavLink Href="/pages/catalog/market-list" Icon="@Icons.Material.Outlined.Sell">Markets</MudNavLink>
+    }
+    @if (_canViewProducts)
+    {
+        <MudNavLink Href="/pages/catalog/product-list" Icon="@Icons.Material.Outlined.GifBox">Products</MudNavLink>
+    }
+    @if (_canViewOrders)
+    {
+       @*  <MudNavLink Href="/pages/catalog/order-list" Icon="@Icons.Material.Outlined.Money">Orders</MudNavLink> *@
+    }
+    @if (_canViewRoles || _canViewRoles)
+    {
+        <MudNavGroup Title="Administration" Icon="@Icons.Material.Outlined.Security" HideExpandIcon="false">
+            @if (_canViewUsers)
+            {
+                <MudNavLink Href="pages/identity/users" Icon="@Icons.Material.Outlined.Person">Users</MudNavLink>
+            }
+            @if (_canViewRoles)
+            {
+                <MudNavLink Href="pages/identity/roles" Icon="@Icons.Material.Outlined.Lock">Roles</MudNavLink>
+            }
+        </MudNavGroup>
+    }
+</MudNavMenu>

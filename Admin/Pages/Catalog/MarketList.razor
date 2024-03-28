@@ -1,0 +1,70 @@
+﻿@page "/pages/catalog/market-list"
+
+@using SuperMarket.Common.Authorization;
+@using SuperMarket.Common.Responses.Markets;
+
+@attribute [MustHavePermission(AppFeature.Markets, AppAction.Read)]
+
+<style>
+    .mud-table-container {
+        overflow: auto;
+    }
+</style>
+
+<Header OnClose="Cancel" Title="Markets" Description="Markets Management" />
+@if (!_loaded)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudTable Hover="true" Elevation="25" Items="_marketList" Dense="true" @bind-user="_market">
+        <ToolBarContent>
+            <div class="justify-center mud-text-align-center">
+                @if (_canCreateMarkets)
+                {
+                    <MudFab Color="Color.Success" Icon="@Icons.Material.Filled.Add" Size="Size.Small"
+                            IconSize="Size.Medium" Class="mr-2" DisableElevation="true" aria-label="add" />
+                }
+            </div>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<MarketResponse, object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
+            <MudTh Style="text-align:right">Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">
+                <MudHighlighter Text="@context.Name" />
+            </MudTd>
+            <MudTd DataLabel="Actions" Style="text-align:right">
+                @if (_canUpdateMarkets || _canDeleteMarkets)
+                {
+                    <MudMenu DisableElevation="true" Dense="true" Icon="@Icons.Material.Filled.MoreVert" Color="Color.Default" Size="Size.Small" Direction="Direction.Left" OffsetX="true">
+                        @if (_canUpdateMarkets)
+                        {
+                            <MudMenuItem >Edit</MudMenuItem>
+                        }
+                        @if (_canDeleteMarkets)
+                        {
+                            <MudMenuItem >Delete</MudMenuItem>
+                        }
+                    </MudMenu>
+                }
+                else
+                {
+                    <MudButton Variant="Variant.Filled"
+                               DisableElevation="true"
+                               StartIcon="@Icons.Material.Filled.DoNotTouch"
+                               IconColor="Color.Error"
+                               Size="Size.Small"
+                               Color="Color.Surface">
+                        No Permissions
+                    </MudButton>
+                }
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}

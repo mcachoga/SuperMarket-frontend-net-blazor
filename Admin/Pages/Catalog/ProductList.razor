@@ -1,0 +1,78 @@
+﻿@page "/pages/catalog/product-list"
+
+@using SuperMarket.Common.Authorization;
+@using SuperMarket.Common.Responses.Products
+
+@attribute [MustHavePermission(AppFeature.Products, AppAction.Read)]
+
+<style>
+    .mud-table-container {
+        overflow: auto;
+    }
+</style>
+
+<Header OnClose="Cancel" Title="Products" Description="Products Management" />
+@if (!_loaded)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudTable Hover="true" Elevation="25" Items="_productList" Dense="true" @bind-user="_product">
+        <ToolBarContent>
+            <div class="justify-center mud-text-align-center">
+                @if (_canCreateProducts)
+                {
+                    <MudFab Color="Color.Success" Icon="@Icons.Material.Filled.Add" Size="Size.Small"
+                            IconSize="Size.Medium" Class="mr-2" DisableElevation="true" aria-label="add" />
+                }
+            </div>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<ProductResponse, object>(x => x.Barcode)">Firstname</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ProductResponse, object>(x => x.Name)">Lastname</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ProductResponse, object>(x => x.Description)">Email</MudTableSortLabel></MudTh>
+            <MudTh Style="text-align:right">Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Barcode">
+                <MudHighlighter Text="@context.Barcode" />
+            </MudTd>
+            <MudTd DataLabel="Name">
+                <MudHighlighter Text="@context.Name" />
+            </MudTd>
+            <MudTd DataLabel="Description">
+                <MudHighlighter Text="@context.Description" />
+            </MudTd>
+            <MudTd DataLabel="Actions" Style="text-align:right">
+                @if (_canUpdateProducts || _canDeleteProducts)
+                {
+                    <MudMenu DisableElevation="true" Dense="true" Icon="@Icons.Material.Filled.MoreVert" Color="Color.Default" Size="Size.Small" Direction="Direction.Left" OffsetX="true">
+                        @if (_canUpdateProducts)
+                        {
+                            <MudMenuItem >Edit</MudMenuItem>
+                        }
+                        @if (_canDeleteProducts)
+                        {
+                            <MudMenuItem >Delete</MudMenuItem>
+                        }
+                    </MudMenu>
+                }
+                else
+                {
+                    <MudButton Variant="Variant.Filled"
+                               DisableElevation="true"
+                               StartIcon="@Icons.Material.Filled.DoNotTouch"
+                               IconColor="Color.Error"
+                               Size="Size.Small"
+                               Color="Color.Surface">
+                        No Permissions
+                    </MudButton>
+                }
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}
